@@ -1,9 +1,9 @@
-#!/bin/bash
+﻿#!/bin/bash
 set -euo pipefail
 
-WORK_TREE=/home/homelab/renier-real-estate
-LOG=/home/homelab/renier-real-estate/deploy.log
-LOCK=/tmp/renier-real-estate-deploy.lock
+WORK_TREE=/home/homelab/renier-2
+LOG=/home/homelab/renier-2/deploy.log
+LOCK=/tmp/renier-2-deploy.lock
 
 run_deploy() {
   echo "[$(date)] Deploy started"
