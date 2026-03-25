@@ -10,32 +10,32 @@ export function PropertyCard({ property }: { property: Property }) {
 
   return (
     <article className="property-card">
-      <div className="card-media">
-        <img src={property.images[0] ?? FALLBACK_IMAGE} alt={property.title} loading="lazy" />
-        <span className={`badge badge-${property.status.toLowerCase()}`}>{prettyEnum(property.status)}</span>
-      </div>
+      <Link className="card-link-wrap" to={`/properties/${property.slug}`} aria-label={`View details for ${property.title}`}>
+        <div className="card-media">
+          <img src={property.images[0] ?? FALLBACK_IMAGE} alt={property.title} loading="lazy" />
+          <span className={`badge badge-${property.status.toLowerCase()}`}>{prettyEnum(property.status)}</span>
+        </div>
 
-      <div className="card-body">
-        <div className="card-meta-row">
-          <p className="card-meta">
-            {prettyEnum(property.dealType)} • {prettyEnum(property.propertyType)}
+        <div className="card-body">
+          <div className="card-meta-row">
+            <p className="card-meta">
+              {prettyEnum(property.dealType)} | {prettyEnum(property.propertyType)}
+            </p>
+            <p className="card-rating">* {rating}</p>
+          </div>
+          <h3>{property.title}</h3>
+          <p className="card-location">
+            {property.location}, {property.city}
           </p>
-          <p className="card-rating">★ {rating}</p>
+          <p className="card-price">{formatPrice(property.price, property.currency)}</p>
+          <div className="card-stats">
+            <span>{property.bedrooms ?? "-"} bd</span>
+            <span>{property.bathrooms ?? "-"} ba</span>
+            <span>{property.floorAreaSqm ?? property.lotAreaSqm ?? "-"} sqm</span>
+          </div>
+          <span className="inline-link">View Details</span>
         </div>
-        <h3>{property.title}</h3>
-        <p className="card-location">
-          {property.location}, {property.city}
-        </p>
-        <p className="card-price">{formatPrice(property.price, property.currency)}</p>
-        <div className="card-stats">
-          <span>{property.bedrooms ?? "-"} bd</span>
-          <span>{property.bathrooms ?? "-"} ba</span>
-          <span>{property.floorAreaSqm ?? property.lotAreaSqm ?? "-"} sqm</span>
-        </div>
-        <Link className="inline-link" to={`/properties/${property.slug}`}>
-          View Details
-        </Link>
-      </div>
+      </Link>
     </article>
   );
 }

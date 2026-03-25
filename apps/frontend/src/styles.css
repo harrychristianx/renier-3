@@ -45,7 +45,7 @@ img {
 }
 
 main {
-  padding-bottom: 42px;
+  padding-bottom: 56px;
 }
 
 .container {
@@ -207,17 +207,17 @@ button:disabled {
 }
 
 .hero {
-  padding: 20px 0 12px;
+  padding: 28px 0 18px;
 }
 
 .hero-grid {
   display: grid;
-  gap: 12px;
+  gap: 18px;
 }
 
 .hero-copy {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .hero-copy p {
@@ -228,7 +228,7 @@ button:disabled {
 
 .hero-actions {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -288,11 +288,11 @@ button:disabled {
 }
 
 .hero-search {
-  margin-top: 10px;
+  margin-top: 16px;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 40px;
-  padding: 9px;
+  border-radius: 18px;
+  padding: 12px;
   box-shadow: var(--shadow-soft);
 }
 
@@ -323,10 +323,10 @@ textarea:focus {
 }
 
 .category-strip {
-  margin-top: 10px;
+  margin-top: 14px;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .category-strip span {
@@ -339,7 +339,7 @@ textarea:focus {
 }
 
 .section {
-  padding: 18px 0;
+  padding: 28px 0;
 }
 
 .section-soft {
@@ -350,8 +350,8 @@ textarea:focus {
   display: flex;
   justify-content: space-between;
   align-items: end;
-  gap: 10px;
-  margin-bottom: 11px;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
 .section-head > div {
@@ -367,14 +367,14 @@ textarea:focus {
 
 .trust-strip {
   display: grid;
-  gap: 8px;
+  gap: 12px;
 }
 
 .trust-strip article {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface);
-  padding: 10px;
+  padding: 14px;
 }
 
 .trust-strip strong {
@@ -390,7 +390,7 @@ textarea:focus {
 
 .cards-grid {
   display: grid;
-  gap: 12px;
+  gap: 18px;
 }
 
 .property-card {
@@ -398,6 +398,18 @@ textarea:focus {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.property-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.12);
+}
+
+.card-link-wrap {
+  display: block;
+  height: 100%;
 }
 
 .card-media {
@@ -439,8 +451,8 @@ textarea:focus {
 
 .card-body {
   display: grid;
-  gap: 7px;
-  padding: 10px;
+  gap: 10px;
+  padding: 14px;
 }
 
 .card-meta-row {
@@ -458,7 +470,7 @@ textarea:focus {
 }
 
 .card-rating {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 700;
 }
 
@@ -468,7 +480,7 @@ textarea:focus {
 
 .card-location {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
 }
 
 .card-price,
@@ -485,7 +497,7 @@ textarea:focus {
 .pagination {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .card-stats span,
@@ -504,7 +516,7 @@ textarea:focus {
 .split-banner,
 .detail-layout {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .services-grid article,
@@ -517,7 +529,7 @@ textarea:focus {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  padding: 10px;
+  padding: 14px;
 }
 
 .services-grid article p,
@@ -534,7 +546,7 @@ textarea:focus {
 }
 
 .filter-shell {
-  margin: 10px 0 14px;
+  margin: 14px 0 20px;
 }
 
 .filter-grid {
@@ -558,9 +570,9 @@ textarea:focus {
 }
 
 .cta-band p {
-  margin-top: 4px;
+  margin-top: 8px;
   color: #6f6f6f;
-  font-size: 0.8rem;
+  font-size: 0.84rem;
 }
 
 .footer-info h4 {
@@ -583,7 +595,7 @@ blockquote {
 .gallery-grid {
   display: grid;
   gap: 8px;
-  margin: 10px 0;
+  margin: 14px 0;
 }
 
 .gallery-grid img {
