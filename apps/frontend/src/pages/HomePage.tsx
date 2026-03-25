@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getListings } from "../lib/api";
 import type { Property } from "../lib/types";
@@ -6,6 +6,8 @@ import { PropertyCard } from "../components/PropertyCard";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1700&q=80";
+const AUTO_SLIDE_MS = 5000;
+const RESUME_AFTER_MS = 6500;
 
 export function HomePage() {
   const [featured, setFeatured] = useState<Property[]>([]);
@@ -16,7 +18,10 @@ export function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeFeaturedIndex, setActiveFeaturedIndex] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
   const navigate = useNavigate();
+  const featuredScrollRef = useRef<HTMLDivElement | null>(null);
+  const resumeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -56,16 +61,62 @@ export function HomePage() {
   }, [featured.length]);
 
   useEffect(() => {
-    if (featured.length <= 1) return;
+    return () => {
+      if (resumeTimerRef.current) {
+        window.clearTimeout(resumeTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = featuredScrollRef.current;
+    if (!container || !featured.length) return;
+
+    let settleTimer: number | undefined;
+
+    const updateActiveSlide = () => {
+      const items = Array.from(container.querySelectorAll<HTMLElement>("[data-featured-index]"));
+      if (!items.length) return;
+
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      items.forEach((item, index) => {
+        const distance = Math.abs(item.offsetLeft - container.scrollLeft);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      setActiveFeaturedIndex((previous) => (previous === closestIndex ? previous : closestIndex));
+    };
+
+    const onScroll = () => {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(updateActiveSlide, 70);
+    };
+
+    container.addEventListener("scroll", onScroll, { passive: true });
+    updateActiveSlide();
+
+    return () => {
+      container.removeEventListener("scroll", onScroll);
+      window.clearTimeout(settleTimer);
+    };
+  }, [featured.length]);
+
+  useEffect(() => {
+    if (featured.length <= 1 || isCarouselPaused) return;
 
     const timer = window.setInterval(() => {
-      setActiveFeaturedIndex((current) => (current + 1) % featured.length);
-    }, 5000);
+      goToFeatured(activeFeaturedIndex + 1, false);
+    }, AUTO_SLIDE_MS);
 
     return () => {
       window.clearInterval(timer);
     };
-  }, [featured.length]);
+  }, [featured.length, activeFeaturedIndex, isCarouselPaused]);
 
   function onSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -78,10 +129,31 @@ export function HomePage() {
     navigate(`/properties?${query.toString()}`);
   }
 
-  function goToFeatured(index: number) {
+  function pauseCarouselTemporarily() {
+    setIsCarouselPaused(true);
+
+    if (resumeTimerRef.current) {
+      window.clearTimeout(resumeTimerRef.current);
+    }
+
+    resumeTimerRef.current = window.setTimeout(() => {
+      setIsCarouselPaused(false);
+    }, RESUME_AFTER_MS);
+  }
+
+  function goToFeatured(index: number, shouldPause = true) {
     if (!featured.length) return;
+
     const normalized = (index + featured.length) % featured.length;
     setActiveFeaturedIndex(normalized);
+
+    const container = featuredScrollRef.current;
+    const target = container?.querySelector<HTMLElement>(`[data-featured-index=\"${normalized}\"]`);
+    target?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+
+    if (shouldPause) {
+      pauseCarouselTemporarily();
+    }
   }
 
   return (
@@ -190,35 +262,43 @@ export function HomePage() {
         ) : featured.length ? (
           <div className="container featured-carousel">
             <div className="carousel-controls">
-              <button
-                type="button"
-                className="carousel-btn"
-                onClick={() => goToFeatured(activeFeaturedIndex - 1)}
-                aria-label="Previous featured listing"
-              >
-                Prev
-              </button>
-              <button
-                type="button"
-                className="carousel-btn"
-                onClick={() => goToFeatured(activeFeaturedIndex + 1)}
-                aria-label="Next featured listing"
-              >
-                Next
-              </button>
+              <p className="carousel-hint">Swipe to explore</p>
+              <div className="carousel-actions">
+                <button
+                  type="button"
+                  className="carousel-btn"
+                  onClick={() => goToFeatured(activeFeaturedIndex - 1)}
+                  aria-label="Previous featured listing"
+                >
+                  Prev
+                </button>
+                <button
+                  type="button"
+                  className="carousel-btn"
+                  onClick={() => goToFeatured(activeFeaturedIndex + 1)}
+                  aria-label="Next featured listing"
+                >
+                  Next
+                </button>
+              </div>
             </div>
 
-            <div className="featured-track-shell">
-              <div
-                className="featured-track"
-                style={{ transform: `translateX(-${activeFeaturedIndex * 100}%)` }}
-              >
-                {featured.map((property) => (
-                  <div className="featured-slide" key={property.id}>
-                    <PropertyCard property={property} />
-                  </div>
-                ))}
-              </div>
+            <div
+              className="featured-scroll"
+              ref={featuredScrollRef}
+              onTouchStart={pauseCarouselTemporarily}
+              onMouseDown={pauseCarouselTemporarily}
+              onWheel={pauseCarouselTemporarily}
+            >
+              {featured.map((property, index) => (
+                <div
+                  className={`featured-item ${index === activeFeaturedIndex ? "active" : ""}`}
+                  key={property.id}
+                  data-featured-index={index}
+                >
+                  <PropertyCard property={property} />
+                </div>
+              ))}
             </div>
 
             {featured.length > 1 ? (

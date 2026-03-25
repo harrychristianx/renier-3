@@ -400,7 +400,19 @@ textarea:focus {
 
 .carousel-controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.carousel-hint {
+  font-size: 0.72rem;
+  color: #6b7280;
+}
+
+.carousel-actions {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 
@@ -415,18 +427,33 @@ textarea:focus {
   background: #f5f5f5;
 }
 
-.featured-track-shell {
-  overflow: hidden;
+.featured-scroll {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(84%, 1fr);
+  gap: 14px;
+  overflow-x: auto;
+  padding: 2px 2px 10px;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
-.featured-track {
-  display: flex;
-  transition: transform 0.35s ease;
-  will-change: transform;
+.featured-scroll::-webkit-scrollbar {
+  display: none;
 }
 
-.featured-slide {
-  min-width: 100%;
+.featured-item {
+  scroll-snap-align: start;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.92;
+}
+
+.featured-item.active {
+  opacity: 1;
+  transform: translateY(-2px);
 }
 
 .carousel-dots {
@@ -442,10 +469,12 @@ textarea:focus {
   border: 0;
   background: #d4d4d8;
   padding: 0;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .carousel-dot.active {
   background: var(--accent);
+  transform: scale(1.2);
 }
 
 .property-card {
@@ -755,6 +784,10 @@ blockquote {
 }
 
 @media (min-width: 720px) {
+  .featured-scroll {
+    grid-auto-columns: minmax(48%, 1fr);
+  }
+
   .hero-grid {
     grid-template-columns: 1.05fr 0.95fr;
   }
@@ -803,6 +836,10 @@ blockquote {
 }
 
 @media (min-width: 980px) {
+  .featured-scroll {
+    grid-auto-columns: minmax(32%, 1fr);
+  }
+
   .nav-links {
     display: flex;
   }
