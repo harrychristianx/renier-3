@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+COPY tsconfig.base.json ./
+COPY apps ./apps
+COPY packages ./packages
+
+RUN npm ci
+RUN npx prisma generate --schema packages/db/prisma/schema.prisma
+
+ENV NODE_ENV=production
+EXPOSE 4000
+
+CMD ["sh", "-c", "npx prisma migrate deploy --schema packages/db/prisma/schema.prisma && npm run start -w @renier/api"]

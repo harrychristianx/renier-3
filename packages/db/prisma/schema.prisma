@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum DealType {
+  SALE
+  RENT
+}
+
+enum PropertyType {
+  HOUSE
+  CONDO
+  APARTMENT
+  LOT
+  COMMERCIAL
+}
+
+enum ListingStatus {
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+enum ContactMethod {
+  EMAIL
+  PHONE
+  SMS
+  WHATSAPP
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+model Property {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  description String
+  price       Int
+  currency    String        @default("PHP")
+  dealType    DealType
+  propertyType PropertyType
+  status      ListingStatus @default(AVAILABLE)
+  location    String
+  city        String
+  province    String?
+  bedrooms    Int?
+  bathrooms   Int?
+  floorAreaSqm Float?
+  lotAreaSqm  Float?
+  features    Json?
+  images      Json?
+  videoUrl    String?
+  mapEmbedUrl String?
+  agentName   String?
+  agentTitle  String?
+  agentPhone  String?
+  agentEmail  String?
+  isFeatured  Boolean       @default(false)
+  isLatest    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  inquiries   Inquiry[]
+
+  @@index([city])
+  @@index([dealType])
+  @@index([propertyType])
+  @@index([status])
+  @@index([price])
+}
+
+model Inquiry {
+  id               String         @id @default(cuid())
+  name             String
+  email            String
+  phone            String?
+  message          String
+  preferredContact ContactMethod  @default(EMAIL)
+  propertyId       String?
+  propertyTitle    String?
+  status           InquiryStatus  @default(NEW)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  property         Property?      @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([propertyId])
+}

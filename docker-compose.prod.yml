@@ -1,0 +1,46 @@
+services:
+  api:
+    container_name: renier-real-estate-api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: 4000
+      DATABASE_URL: file:/data/dev.db
+      FRONTEND_ORIGIN: https://renier.harrychristian.com
+      ADMIN_ORIGIN: https://admin-renier.harrychristian.com
+    volumes:
+      - renier-db-data:/data
+    expose:
+      - "4000"
+
+  frontend:
+    container_name: renier-real-estate-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_URL: ""
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:8085:80"
+
+  admin:
+    container_name: renier-real-estate-admin
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+      args:
+        VITE_API_URL: ""
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "127.0.0.1:8086:80"
+
+volumes:
+  renier-db-data:

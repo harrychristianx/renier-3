@@ -1,0 +1,19 @@
+{
+  "name": "renier-real-estate",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w @renier/api\" \"npm run dev -w @renier/frontend\" \"npm run dev -w @renier/admin\"",
+    "build": "npm run build -ws --if-present",
+    "db:generate": "npm run prisma:generate -w @renier/db",
+    "db:migrate": "npm run prisma:migrate -w @renier/db",
+    "db:seed": "npm run prisma:seed -w @renier/db"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

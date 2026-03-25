@@ -1,0 +1,38 @@
+﻿import { Link } from "react-router-dom";
+import { formatPrice, prettyEnum } from "../lib/api";
+import type { Property } from "../lib/types";
+
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=1200&q=80";
+
+export function PropertyCard({ property }: { property: Property }) {
+  return (
+    <article className="property-card">
+      <div className="card-media">
+        <img src={property.images[0] ?? FALLBACK_IMAGE} alt={property.title} loading="lazy" />
+        <div className="card-overlay" />
+        <span className={`badge badge-${property.status.toLowerCase()}`}>{prettyEnum(property.status)}</span>
+        <p className="card-topline">
+          {prettyEnum(property.dealType)} • {prettyEnum(property.propertyType)}
+        </p>
+      </div>
+
+      <div className="card-body">
+        <p className="card-meta">Premium Listing</p>
+        <h3>{property.title}</h3>
+        <p className="card-location">
+          {property.location}, {property.city}
+        </p>
+        <p className="card-price">{formatPrice(property.price, property.currency)}</p>
+        <div className="card-stats">
+          <span>{property.bedrooms ?? "-"} bd</span>
+          <span>{property.bathrooms ?? "-"} ba</span>
+          <span>{property.floorAreaSqm ?? property.lotAreaSqm ?? "-"} sqm</span>
+        </div>
+        <Link className="inline-link" to={`/properties/${property.slug}`}>
+          View Details
+        </Link>
+      </div>
+    </article>
+  );
+}

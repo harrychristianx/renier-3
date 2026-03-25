@@ -1,0 +1,11 @@
+node_modules
+.env
+.env.*
+!.env.example
+*.log
+dist
+coverage
+.DS_Store
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
