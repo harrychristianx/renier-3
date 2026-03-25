@@ -436,7 +436,8 @@ textarea:focus {
   padding: 2px 2px 10px;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 2px;
-  touch-action: pan-y;
+  touch-action: pan-x pinch-zoom;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -848,4 +849,5 @@ blockquote {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
 
