@@ -393,6 +393,61 @@ textarea:focus {
   gap: 18px;
 }
 
+.featured-carousel {
+  display: grid;
+  gap: 12px;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.carousel-btn {
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #222;
+  padding: 0.42rem 0.78rem;
+}
+
+.carousel-btn:hover {
+  background: #f5f5f5;
+}
+
+.featured-track-shell {
+  overflow: hidden;
+}
+
+.featured-track {
+  display: flex;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+
+.featured-slide {
+  min-width: 100%;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.carousel-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: 0;
+  background: #d4d4d8;
+  padding: 0;
+}
+
+.carousel-dot.active {
+  background: var(--accent);
+}
+
 .property-card {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -590,6 +645,13 @@ blockquote {
 
 .detail-layout {
   align-items: start;
+  gap: 18px;
+}
+
+.detail-sidebar {
+  display: grid;
+  gap: 16px;
+  align-content: start;
 }
 
 .gallery-grid {
@@ -624,18 +686,32 @@ blockquote {
 
 .panel {
   display: grid;
-  gap: 8px;
+  gap: 12px;
+}
+
+.panel h3 {
+  margin: 0;
+}
+
+.panel label {
+  gap: 6px;
+}
+
+.detail-form {
+  gap: 12px;
+  margin-top: 4px;
 }
 
 .calc-result {
+  margin-top: 4px;
   background: #fff5f7;
   border: 1px solid #ffd6de;
   border-radius: 10px;
-  padding: 8px;
+  padding: 10px;
 }
 
 .form-message {
-  margin: 7px 0;
+  margin: 10px 0 0;
   border: 1px solid #ffd4dd;
   border-radius: 9px;
   background: #fff5f7;
@@ -735,3 +811,4 @@ blockquote {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+

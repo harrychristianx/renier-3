@@ -95,12 +95,27 @@ export function PropertyDetailPage() {
     event.preventDefault();
     if (!property) return;
 
+    const name = inquiryForm.name.trim();
+    const email = inquiryForm.email.trim();
+    const phone = inquiryForm.phone.trim();
+    const message = inquiryForm.message.trim();
+
+    if (message.length < 10) {
+      setInquiryFeedback("Please enter at least 10 characters in your message.");
+      return;
+    }
+
     setIsSubmittingInquiry(true);
     setInquiryFeedback("");
+    setBookingFeedback("");
 
     try {
       await createInquiry({
-        ...inquiryForm,
+        name,
+        email,
+        phone: phone || undefined,
+        message,
+        preferredContact: inquiryForm.preferredContact,
         propertyId: property.id,
         propertyTitle: property.title
       });
@@ -117,20 +132,37 @@ export function PropertyDetailPage() {
     event.preventDefault();
     if (!property) return;
 
+    const name = bookingForm.name.trim();
+    const email = bookingForm.email.trim();
+    const phone = bookingForm.phone.trim();
+    const notes = bookingForm.notes.trim();
+
+    if (!bookingForm.date || !bookingForm.time) {
+      setBookingFeedback("Please select your preferred viewing date and time.");
+      return;
+    }
+
     setIsSubmittingBooking(true);
     setBookingFeedback("");
+    setInquiryFeedback("");
 
     try {
-      const details = bookingForm.notes.trim() || "Please confirm this schedule and next steps.";
+      const details = notes || "Please confirm this schedule and next steps.";
+      const message = [
+        `Booking inquiry for ${property.title}.`,
+        `Preferred date: ${bookingForm.date}.`,
+        `Preferred time: ${bookingForm.time}.`,
+        details
+      ].join(" ");
 
       await createInquiry({
-        name: bookingForm.name,
-        email: bookingForm.email,
-        phone: bookingForm.phone,
+        name,
+        email,
+        phone: phone || undefined,
         preferredContact: bookingForm.preferredContact,
         propertyId: property.id,
         propertyTitle: property.title,
-        message: `Booking request for ${property.title}. Preferred date: ${bookingForm.date}. Preferred time: ${bookingForm.time}. ${details}`
+        message
       });
 
       setBookingForm(EMPTY_BOOKING);
@@ -167,7 +199,7 @@ export function PropertyDetailPage() {
       <div className="container detail-layout">
         <article>
           <p className="eyebrow">
-            {prettyEnum(property.dealType)} • {prettyEnum(property.propertyType)} • {prettyEnum(property.status)}
+            {prettyEnum(property.dealType)} | {prettyEnum(property.propertyType)} | {prettyEnum(property.status)}
           </p>
           <h1>{property.title}</h1>
           <p className="card-location">
@@ -251,7 +283,7 @@ export function PropertyDetailPage() {
 
           <section className="panel">
             <h3>Quick Inquiry</h3>
-            <form className="form-stack" onSubmit={submitInquiry}>
+            <form className="form-stack detail-form" onSubmit={submitInquiry}>
               <input
                 required
                 placeholder="Full name"
@@ -283,6 +315,7 @@ export function PropertyDetailPage() {
               </select>
               <textarea
                 required
+                minLength={10}
                 rows={4}
                 placeholder="Tell us what you need"
                 value={inquiryForm.message}
@@ -297,7 +330,7 @@ export function PropertyDetailPage() {
 
           <section className="panel">
             <h3>Book a Viewing</h3>
-            <form className="form-stack" onSubmit={submitBooking}>
+            <form className="form-stack detail-form" onSubmit={submitBooking}>
               <input
                 required
                 placeholder="Full name"

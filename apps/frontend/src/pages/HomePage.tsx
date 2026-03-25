@@ -15,6 +15,7 @@ export function HomePage() {
   const [maxPrice, setMaxPrice] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeFeaturedIndex, setActiveFeaturedIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,6 +51,22 @@ export function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    setActiveFeaturedIndex(0);
+  }, [featured.length]);
+
+  useEffect(() => {
+    if (featured.length <= 1) return;
+
+    const timer = window.setInterval(() => {
+      setActiveFeaturedIndex((current) => (current + 1) % featured.length);
+    }, 5000);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [featured.length]);
+
   function onSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -59,6 +76,12 @@ export function HomePage() {
     if (maxPrice.trim()) query.set("maxPrice", maxPrice.trim());
 
     navigate(`/properties?${query.toString()}`);
+  }
+
+  function goToFeatured(index: number) {
+    if (!featured.length) return;
+    const normalized = (index + featured.length) % featured.length;
+    setActiveFeaturedIndex(normalized);
   }
 
   return (
@@ -164,12 +187,56 @@ export function HomePage() {
         {error && <p className="container form-message error">{error}</p>}
         {isLoading ? (
           <p className="container muted">Loading featured listings...</p>
-        ) : (
-          <div className="container cards-grid">
-            {featured.map((property) => (
-              <PropertyCard key={property.id} property={property} />
-            ))}
+        ) : featured.length ? (
+          <div className="container featured-carousel">
+            <div className="carousel-controls">
+              <button
+                type="button"
+                className="carousel-btn"
+                onClick={() => goToFeatured(activeFeaturedIndex - 1)}
+                aria-label="Previous featured listing"
+              >
+                Prev
+              </button>
+              <button
+                type="button"
+                className="carousel-btn"
+                onClick={() => goToFeatured(activeFeaturedIndex + 1)}
+                aria-label="Next featured listing"
+              >
+                Next
+              </button>
+            </div>
+
+            <div className="featured-track-shell">
+              <div
+                className="featured-track"
+                style={{ transform: `translateX(-${activeFeaturedIndex * 100}%)` }}
+              >
+                {featured.map((property) => (
+                  <div className="featured-slide" key={property.id}>
+                    <PropertyCard property={property} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {featured.length > 1 ? (
+              <div className="carousel-dots" aria-label="Featured listing slide indicators">
+                {featured.map((property, index) => (
+                  <button
+                    key={property.id}
+                    type="button"
+                    className={`carousel-dot ${index === activeFeaturedIndex ? "active" : ""}`}
+                    onClick={() => goToFeatured(index)}
+                    aria-label={`Go to featured listing ${index + 1}`}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
+        ) : (
+          <p className="container muted">No featured listings yet.</p>
         )}
       </section>
 
