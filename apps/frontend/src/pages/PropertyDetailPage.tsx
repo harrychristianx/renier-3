@@ -28,10 +28,15 @@ export function PropertyDetailPage() {
   const [property, setProperty] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [inquiryForm, setInquiryForm] = useState(EMPTY_INQUIRY);
   const [bookingForm, setBookingForm] = useState(EMPTY_BOOKING);
-  const [feedback, setFeedback] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [inquiryFeedback, setInquiryFeedback] = useState("");
+  const [bookingFeedback, setBookingFeedback] = useState("");
+  const [isSubmittingInquiry, setIsSubmittingInquiry] = useState(false);
+  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
+
   const [downPayment, setDownPayment] = useState(20);
   const [interestRate, setInterestRate] = useState(7.2);
   const [loanYears, setLoanYears] = useState(20);
@@ -88,11 +93,10 @@ export function PropertyDetailPage() {
 
   async function submitInquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (!property) return;
 
-    setIsSubmitting(true);
-    setFeedback("");
+    setIsSubmittingInquiry(true);
+    setInquiryFeedback("");
 
     try {
       await createInquiry({
@@ -100,25 +104,25 @@ export function PropertyDetailPage() {
         propertyId: property.id,
         propertyTitle: property.title
       });
-
       setInquiryForm(EMPTY_INQUIRY);
-      setFeedback("Inquiry sent. Our team will contact you shortly.");
+      setInquiryFeedback("Inquiry sent. Our team will contact you shortly.");
     } catch (submitError) {
-      setFeedback(submitError instanceof Error ? submitError.message : "Unable to send inquiry");
+      setInquiryFeedback(submitError instanceof Error ? submitError.message : "Unable to send inquiry");
     } finally {
-      setIsSubmitting(false);
+      setIsSubmittingInquiry(false);
     }
   }
 
   async function submitBooking(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (!property) return;
 
-    setIsSubmitting(true);
-    setFeedback("");
+    setIsSubmittingBooking(true);
+    setBookingFeedback("");
 
     try {
+      const details = bookingForm.notes.trim() || "Please confirm this schedule and next steps.";
+
       await createInquiry({
         name: bookingForm.name,
         email: bookingForm.email,
@@ -126,17 +130,15 @@ export function PropertyDetailPage() {
         preferredContact: bookingForm.preferredContact,
         propertyId: property.id,
         propertyTitle: property.title,
-        message:
-          `Book a viewing request for ${property.title}. Preferred schedule: ${bookingForm.date} ${bookingForm.time}. ` +
-          bookingForm.notes
+        message: `Booking request for ${property.title}. Preferred date: ${bookingForm.date}. Preferred time: ${bookingForm.time}. ${details}`
       });
 
-      setFeedback("Viewing request submitted. We will confirm your schedule soon.");
       setBookingForm(EMPTY_BOOKING);
+      setBookingFeedback("Viewing request submitted. We will confirm your schedule soon.");
     } catch (submitError) {
-      setFeedback(submitError instanceof Error ? submitError.message : "Unable to submit booking");
+      setBookingFeedback(submitError instanceof Error ? submitError.message : "Unable to submit booking");
     } finally {
-      setIsSubmitting(false);
+      setIsSubmittingBooking(false);
     }
   }
 
@@ -165,7 +167,7 @@ export function PropertyDetailPage() {
       <div className="container detail-layout">
         <article>
           <p className="eyebrow">
-            {prettyEnum(property.dealType)} • {prettyEnum(property.propertyType)} • {prettyEnum(property.status)}
+            {prettyEnum(property.dealType)} â€¢ {prettyEnum(property.propertyType)} â€¢ {prettyEnum(property.status)}
           </p>
           <h1>{property.title}</h1>
           <p className="card-location">
@@ -286,10 +288,11 @@ export function PropertyDetailPage() {
                 value={inquiryForm.message}
                 onChange={(event) => setInquiryForm((prev) => ({ ...prev, message: event.target.value }))}
               />
-              <button disabled={isSubmitting} type="submit">
-                {isSubmitting ? "Sending..." : "Send Inquiry"}
+              <button disabled={isSubmittingInquiry} type="submit">
+                {isSubmittingInquiry ? "Sending..." : "Send Inquiry"}
               </button>
             </form>
+            {inquiryFeedback ? <p className="form-message">{inquiryFeedback}</p> : null}
           </section>
 
           <section className="panel">
@@ -342,10 +345,11 @@ export function PropertyDetailPage() {
                 value={bookingForm.notes}
                 onChange={(event) => setBookingForm((prev) => ({ ...prev, notes: event.target.value }))}
               />
-              <button disabled={isSubmitting} type="submit">
-                {isSubmitting ? "Submitting..." : "Submit Viewing Request"}
+              <button disabled={isSubmittingBooking} type="submit">
+                {isSubmittingBooking ? "Submitting..." : "Submit Viewing Request"}
               </button>
             </form>
+            {bookingFeedback ? <p className="form-message">{bookingFeedback}</p> : null}
           </section>
 
           {property.agentName ? (
@@ -357,8 +361,6 @@ export function PropertyDetailPage() {
               {property.agentEmail ? <p>{property.agentEmail}</p> : null}
             </section>
           ) : null}
-
-          {feedback ? <p className="form-message">{feedback}</p> : null}
         </aside>
       </div>
     </section>

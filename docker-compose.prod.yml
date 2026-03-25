@@ -1,6 +1,6 @@
-﻿services:
+services:
   api:
-    container_name: renier-2-api
+    container_name: renier-3-api
     build:
       context: .
       dockerfile: Dockerfile.api
@@ -9,15 +9,15 @@
       NODE_ENV: production
       API_PORT: 4000
       DATABASE_URL: file:/data/dev.db
-      FRONTEND_ORIGIN: https://renier-2.harrychristian.com
-      ADMIN_ORIGIN: https://admin-renier-2.harrychristian.com
+      FRONTEND_ORIGIN: https://renier-3.harrychristian.com
+      ADMIN_ORIGIN: https://admin-renier-3.harrychristian.com
     volumes:
-      - renier-2-db-data:/data
+      - renier-3-db-data:/data
     expose:
       - "4000"
 
   frontend:
-    container_name: renier-2-frontend
+    container_name: renier-3-frontend
     build:
       context: .
       dockerfile: Dockerfile.frontend
@@ -27,10 +27,10 @@
     depends_on:
       - api
     ports:
-      - "127.0.0.1:8087:80"
+      - "127.0.0.1:8091:80"
 
   admin:
-    container_name: renier-2-admin
+    container_name: renier-3-admin
     build:
       context: .
       dockerfile: Dockerfile.admin
@@ -40,7 +40,7 @@
     depends_on:
       - api
     ports:
-      - "127.0.0.1:8088:80"
+      - "127.0.0.1:8092:80"
 
 volumes:
-  renier-2-db-data:
+  renier-3-db-data:

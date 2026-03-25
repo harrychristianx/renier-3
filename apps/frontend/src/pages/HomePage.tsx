@@ -1,11 +1,11 @@
-﻿import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getListings } from "../lib/api";
 import type { Property } from "../lib/types";
 import { PropertyCard } from "../components/PropertyCard";
 
 const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1700&q=80";
+  "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1700&q=80";
 
 export function HomePage() {
   const [featured, setFeatured] = useState<Property[]>([]);
@@ -26,8 +26,8 @@ export function HomePage() {
 
       try {
         const [featuredResponse, latestResponse] = await Promise.all([
-          getListings({ featured: true, pageSize: 3 }),
-          getListings({ latest: true, pageSize: 3 })
+          getListings({ featured: true, pageSize: 6 }),
+          getListings({ latest: true, pageSize: 6 })
         ]);
 
         if (!active) return;
@@ -66,15 +66,14 @@ export function HomePage() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-copy">
-            <p className="eyebrow">Modern premium real estate experience</p>
-            <h1>Find homes that look exceptional online and feel right in person.</h1>
+            <p className="eyebrow">Stay-inspired property browsing</p>
+            <h1>Discover homes with an Airbnb-like browsing experience.</h1>
             <p>
-              Renier's Real Estate combines luxury-grade visuals, fast search, and direct agent access so buyers and
-              renters can move from discovery to decision with confidence.
+              Browse faster with compact cards, flexible filters, and instant booking inquiry flow for every listing.
             </p>
             <div className="hero-actions">
               <Link className="cta-btn" to="/properties">
-                Explore Listings
+                Start Exploring
               </Link>
               <Link className="ghost-btn" to="/properties?intent=viewing">
                 Book a Viewing
@@ -83,11 +82,11 @@ export function HomePage() {
           </div>
 
           <div className="hero-visual" aria-hidden="true">
-            <img src={HERO_IMAGE} alt="Premium home exterior" />
+            <img src={HERO_IMAGE} alt="Cozy interior" />
             <div className="hero-float-card">
-              <p>Curated homes</p>
-              <strong>10,000+</strong>
-              <span>buyers and renters served</span>
+              <p>Fresh listings today</p>
+              <strong>120+</strong>
+              <span>compact, filter-first browsing</span>
             </div>
           </div>
         </div>
@@ -95,7 +94,7 @@ export function HomePage() {
         <div className="container">
           <form className="hero-search" onSubmit={onSearch}>
             <label>
-              Location
+              Where
               <input
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
@@ -103,7 +102,7 @@ export function HomePage() {
               />
             </label>
             <label>
-              Property Type
+              Property type
               <select value={propertyType} onChange={(event) => setPropertyType(event.target.value)}>
                 <option value="">Any type</option>
                 <option value="HOUSE">House</option>
@@ -114,7 +113,7 @@ export function HomePage() {
               </select>
             </label>
             <label>
-              Max Budget (PHP)
+              Max budget
               <input
                 value={maxPrice}
                 onChange={(event) => setMaxPrice(event.target.value)}
@@ -122,32 +121,41 @@ export function HomePage() {
                 inputMode="numeric"
               />
             </label>
-            <button type="submit">Search Properties</button>
+            <button type="submit">Search</button>
           </form>
+        </div>
+
+        <div className="container category-strip" id="about">
+          <span>Entire homes</span>
+          <span>Condos</span>
+          <span>City center</span>
+          <span>Near schools</span>
+          <span>Investment ready</span>
+          <span>Family friendly</span>
         </div>
       </section>
 
       <section className="section trust-section">
-        <div className="container trust-strip" id="about">
+        <div className="container trust-strip">
           <article>
-            <strong>6-7 weeks</strong>
-            <p>Project timeline from planning to live launch</p>
+            <strong>Mobile first</strong>
+            <p>Optimized spacing and controls for thumb-friendly navigation.</p>
           </article>
           <article>
-            <strong>Mobile-first</strong>
-            <p>Optimized for modern phone browsing and fast lead capture</p>
+            <strong>Fast response</strong>
+            <p>Booking and inquiry requests go directly to admin for follow-up.</p>
           </article>
           <article>
             <strong>Always updated</strong>
-            <p>Availability and pricing managed in real time by admin</p>
+            <p>Listing status is managed in real time by your team.</p>
           </article>
         </div>
       </section>
 
-      <section className="section listings-section">
+      <section className="section listings-section" id="services">
         <div className="container section-head">
           <div>
-            <p className="eyebrow">Handpicked</p>
+            <p className="eyebrow">Trending now</p>
             <h2>Popular Listings</h2>
           </div>
           <Link to="/properties">Browse all</Link>
@@ -165,34 +173,32 @@ export function HomePage() {
         )}
       </section>
 
-      <section className="section section-soft" id="services">
-        <div className="container section-head">
+      <section className="section section-soft" id="join">
+        <div className="container split-banner">
           <div>
-            <p className="eyebrow">Services</p>
-            <h2>Built to convert views into serious leads</h2>
+            <h3>Partner Developers</h3>
+            <p>Trusted collaborations with local and national property developers.</p>
+            <div className="logo-row">
+              <span>UrbanRise</span>
+              <span>MetroLand</span>
+              <span>Aspire Homes</span>
+              <span>BlueBay Estates</span>
+            </div>
           </div>
-        </div>
-
-        <div className="container services-grid">
-          <article>
-            <h3>Sell with precision</h3>
-            <p>Premium listing presentation with maps, media, and clear market-ready positioning.</p>
-          </article>
-          <article>
-            <h3>Buy with clarity</h3>
-            <p>Refined filters and structured property details for faster shortlist decisions.</p>
-          </article>
-          <article>
-            <h3>Respond faster</h3>
-            <p>Centralized inquiry management helps your team follow up while intent is still high.</p>
-          </article>
+          <div>
+            <h3>Client Testimonials</h3>
+            <blockquote>
+              "The booking process felt very easy on mobile, and we got confirmation quickly."
+            </blockquote>
+            <p>- Paula R., renter</p>
+          </div>
         </div>
       </section>
 
-      <section className="section">
+      <section className="section" id="news">
         <div className="container section-head">
           <div>
-            <p className="eyebrow">New this week</p>
+            <p className="eyebrow">Recently added</p>
             <h2>Latest Listings</h2>
           </div>
           <Link to="/properties">See more</Link>
@@ -209,58 +215,17 @@ export function HomePage() {
         )}
       </section>
 
-      <section className="section section-soft" id="join">
-        <div className="container split-banner">
-          <div>
-            <h3>Partner Developers</h3>
-            <p>Trusted collaborations across local and national property developers.</p>
-            <div className="logo-row">
-              <span>UrbanRise</span>
-              <span>MetroLand</span>
-              <span>Aspire Homes</span>
-              <span>BlueBay Estates</span>
-            </div>
-          </div>
-          <div>
-            <h3>Client Testimonials</h3>
-            <blockquote>
-              "Smooth process from inquiry to viewing. The listing details were accurate and complete."
-            </blockquote>
-            <p>- Carla M., first-time buyer</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section" id="news">
+      <section className="section section-soft" id="contact">
         <div className="container cta-band">
-          <h3>Ready to list or book a viewing?</h3>
-          <p>Launch your next move with a platform designed for speed, trust, and premium presentation.</p>
+          <h3>Need a fast viewing schedule?</h3>
+          <p>Choose a listing and send a booking request in less than a minute.</p>
           <div className="cta-row">
             <Link className="cta-btn" to="/properties">
-              Browse Properties
+              Browse Listings
             </Link>
             <Link className="ghost-btn" to="/properties?intent=viewing">
               Book a Viewing
             </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="section section-soft" id="contact">
-        <div className="container footer-info">
-          <div>
-            <h4>Contact</h4>
-            <p>Email: hello@reniersrealestate.com</p>
-            <p>Phone: +63 917 000 1122</p>
-          </div>
-          <div>
-            <h4>Office</h4>
-            <p>Cagayan de Oro, Misamis Oriental</p>
-            <p>Mon-Sat, 9:00 AM to 6:00 PM</p>
-          </div>
-          <div>
-            <h4>Follow</h4>
-            <p>Facebook / Instagram / YouTube</p>
           </div>
         </div>
       </section>

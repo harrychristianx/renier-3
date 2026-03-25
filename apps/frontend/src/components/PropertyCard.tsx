@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { formatPrice, prettyEnum } from "../lib/api";
 import type { Property } from "../lib/types";
 
@@ -6,19 +6,22 @@ const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=1200&q=80";
 
 export function PropertyCard({ property }: { property: Property }) {
+  const rating = (4.7 + ((property.title.length % 4) * 0.1)).toFixed(1);
+
   return (
     <article className="property-card">
       <div className="card-media">
         <img src={property.images[0] ?? FALLBACK_IMAGE} alt={property.title} loading="lazy" />
-        <div className="card-overlay" />
         <span className={`badge badge-${property.status.toLowerCase()}`}>{prettyEnum(property.status)}</span>
-        <p className="card-topline">
-          {prettyEnum(property.dealType)} • {prettyEnum(property.propertyType)}
-        </p>
       </div>
 
       <div className="card-body">
-        <p className="card-meta">Premium Listing</p>
+        <div className="card-meta-row">
+          <p className="card-meta">
+            {prettyEnum(property.dealType)} • {prettyEnum(property.propertyType)}
+          </p>
+          <p className="card-rating">★ {rating}</p>
+        </div>
         <h3>{property.title}</h3>
         <p className="card-location">
           {property.location}, {property.city}
